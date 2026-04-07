@@ -149,12 +149,71 @@ body {
 
 /* Container for chat content - adjusted for fixed topnav */
 .container {
-    max-width: 900px;
+    max-width: 1200px; /* Increased to accommodate side panel */
     margin: 80px auto 0; /* Added top margin to account for fixed navbar */
     padding: 20px;
     height: calc(100vh - 80px); /* Adjust height to account for navbar */
     display: flex;
+    gap: 20px; /* Space between chat and quick questions */
+}
+
+.chat-container {
+    flex: 1;
+    display: flex;
     flex-direction: column;
+}
+
+/* Quick questions panel */
+.quick-questions {
+    width: 280px;
+    background: var(--panel-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    height: fit-content;
+    position: sticky;
+    top: 100px; /* Position below navbar */
+}
+
+.quick-questions h3 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+    text-align: center;
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.quick-question-btn {
+    padding: var(--spacing-md);
+    background: var(--card-background);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    text-align: left;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.4;
+}
+
+.quick-question-btn i {
+    color: var(--primary-color);
+    font-size: var(--font-size-md);
+    width: 20px;
+}
+
+.quick-question-btn:hover {
+    background: var(--border-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
 h1 {
@@ -312,11 +371,32 @@ h1 {
     background: var(--light-text);
 }
 
+/* Adding custom loading style */
+#chat-box p em {
+    color: var(--light-text);
+    font-style: italic;
+}
+
 /* Responsive */
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
     .container {
+        flex-direction: column-reverse;
         padding: 15px;
         margin-top: 70px;
+    }
+    
+    .quick-questions {
+        width: 100%;
+        position: static;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .quick-question-btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    #chat-box {
+        max-height: calc(100vh - 380px);
     }
 }
 
@@ -340,7 +420,7 @@ h1 {
     }
     
     #chat-box {
-        max-height: calc(100vh - 290px);
+        max-height: calc(100vh - 450px);
     }
     
     #topNav {
@@ -358,10 +438,12 @@ h1 {
     .navRight {
         gap: 4px;
     }
-}
-
-/* Adding custom loading style */
-#chat-box p em {
-    color: var(--light-text);
-    font-style: italic;
+    
+    .quick-questions {
+        padding: var(--spacing-sm);
+    }
+    
+    .quick-question-btn {
+        font-size: 12px;
+    }
 }

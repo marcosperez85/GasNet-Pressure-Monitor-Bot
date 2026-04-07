@@ -16,10 +16,20 @@
 </nav>
 
 <div class="container">
-    <!-- <h1>Consultar predicción</h1> -->
-    <div id="chat-box"></div>
-    <div class="input-container">
-        <input type="text" id="cuadroParaUserInput" placeholder="Escribe tu pregunta..." autocomplete="off">
-        <button id="sendButton"><i class="fas fa-paper-plane"></i> Enviar</button>
+    <div class="chat-container">
+        <div id="chat-box"></div>
+        <div class="input-container">
+            <input type="text" id="cuadroParaUserInput" placeholder="Escribe tu pregunta..." autocomplete="off">
+            <button id="sendButton"><i class="fas fa-paper-plane"></i> Enviar</button>
+        </div>
+    </div>
+    
+    <!-- Preguntas predefinidas en el margen derecho -->
+    <div class="quick-questions">
+        <h3>Preguntas Rápidas</h3>
+        <button class="quick-question-btn"><i class="fas fa-file-alt"></i> Dame un resumen del sistema</button>
+        <button class="quick-question-btn"><i class="fas fa-exclamation-triangle"></i> ¿Qué tramos tienen linepack bajo el umbral crítico?</button>
+        <button class="quick-question-btn"><i class="fas fa-lightbulb"></i> Dame recomendaciones para regular la presión</button>
+        <button class="quick-question-btn"><i class="fas fa-clock"></i> ¿Cuáles son los tramos con menor autonomía?</button>
     </div>
 </div>

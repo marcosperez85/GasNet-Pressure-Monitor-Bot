@@ -12,6 +12,7 @@ const chatbot_endpoint = $API_GATEWAY_URL.endsWith('/chat') ?
 const $cuadroParaUserInput = $('#cuadroParaUserInput');
 const $chatBox = $('#chat-box');
 const $sendButton = $('#sendButton');
+const $quickQuestionBtns = $('.quick-question-btn');
 
 // Agregar evento para los botones de navegación
 $('.navButton').on('click', function() {
@@ -23,6 +24,22 @@ $('.navButton').on('click', function() {
 // Agregar evento click para el botón de envío
 $sendButton.on('click', function() {
     sendMessage();
+});
+
+// Agregar eventos para los botones de preguntas rápidas
+$quickQuestionBtns.on('click', function() {
+    const question = $(this).text().trim();
+    $cuadroParaUserInput.val(question);
+    sendMessage();
+    
+    // Efecto de feedback visual en el botón
+    $(this).css('background-color', 'var(--primary-color)');
+    $(this).css('color', 'var(--panel-background)');
+    
+    setTimeout(() => {
+        $(this).css('background-color', '');
+        $(this).css('color', '');
+    }, 500);
 });
 
 async function sendMessage() {
@@ -105,6 +122,6 @@ $cuadroParaUserInput.on('keypress', function(e) {
 // Mensaje de bienvenida al cargar la página
 $(document).ready(function() {
     setTimeout(() => {
-        $chatBox.append(`<p class="bot-message"><strong>Camu Bot:</strong> ¡Hola! Soy tu asistente de IA. ¿En qué puedo ayudarte hoy?</p>`);
+        $chatBox.append(`<p class="bot-message"><strong>Camu Bot:</strong>¡Hola! Soy tu asistente de IA. ¿En qué puedo ayudarte hoy?</p>`);
     }, 500);
 });
