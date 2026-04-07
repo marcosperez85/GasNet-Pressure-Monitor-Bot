@@ -7,8 +7,8 @@
 		"overview": "AI Assistant"
 	},
 	"info": {
-		"version": "1.0.7",
-		"updated": "22/03/2026",
+		"version": "2.0.0",
+		"updated": "7/04/2026",
 		"size": "12 KB",
 		"developer": "Marcos Perez"
 	},
@@ -29,14 +29,30 @@
 			"API_GATEWAY_API_KEY": {
 				"title": "API KEY de API Gateway",
 				"$ref": "#/definitions/dataSource"
+			},
+			"SYSTEM_DATA": {
+				"title": "Contexto GLOBAL para el prompt",
+				"$ref": "#/definitions/dataSource"
 			}
 		},
 		"UISchema": {
 			"API_GATEWAY_URL": {
-				"ui:field": "dataSource"
+				"ui:field": "dataSource",
+				"ui:contents": [
+					"manual"
+				]
 			},
 			"API_GATEWAY_API_KEY": {
-				"ui:field": "dataSource"
+				"ui:field": "dataSource",
+				"ui:contents": [
+					"manual"
+				]
+			},
+			"SYSTEM_DATA": {
+				"ui:field": "dataSource",
+				"ui:contents": [
+					"global"
+				]
 			}
 		}
 	},
