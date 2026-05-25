@@ -4,6 +4,7 @@ let data = EMBED.getComponent().schema.data;
 export const $API_GATEWAY_URL = data.API_GATEWAY_URL.manual;
 export const $API_GATEWAY_API_KEY = data.API_GATEWAY_API_KEY.manual;
 export const $SYSTEM_DATA =  EMBED.getGlobalData(data.SYSTEM_DATA);
+export const USER_NAME =  EMBED.getGlobalData(data.USER_NAME);
 
 const chatbot_endpoint = $API_GATEWAY_URL.endsWith('/chat') ?
     $API_GATEWAY_URL :
@@ -251,6 +252,6 @@ window.updateBotSystemData = updateSystemData;
 // Mensaje de bienvenida al cargar la página
 $(document).ready(function () {
     setTimeout(() => {
-        $chatBox.append(`<p class="bot-message"><strong>Camu Bot:</strong> ¡Hola! Soy tu asistente de IA, ¿en qué puedo ayudarte hoy?</p>`);
+        $chatBox.append(`<p class="bot-message"><strong>Camu Bot:</strong> ¡Hola! ${USER_NAME} Soy tu asistente de IA, ¿en qué puedo ayudarte hoy?</p>`);
     }, 500);
 });
