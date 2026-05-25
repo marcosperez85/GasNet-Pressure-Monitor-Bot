@@ -33,6 +33,10 @@
 			"SYSTEM_DATA": {
 				"title": "Contexto GLOBAL para el prompt",
 				"$ref": "#/definitions/dataSource"
+			},
+			"USER_NAME": {
+				"title": "Nombre de usuario para chatbot",
+				"$ref": "#/definitions/dataSource"
 			}
 		},
 		"UISchema": {
@@ -49,6 +53,12 @@
 				]
 			},
 			"SYSTEM_DATA": {
+				"ui:field": "dataSource",
+				"ui:contents": [
+					"global"
+				]
+			},
+			"USER_NAME": {
 				"ui:field": "dataSource",
 				"ui:contents": [
 					"global"
