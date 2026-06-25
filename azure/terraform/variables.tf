@@ -1,3 +1,9 @@
+variable "resource_group_name" {
+  type        = string
+  default     = "rg-telemetria-poc-eus-01"
+  description = "Nombre del Grupo de Recursos existente creado por el cliente"
+}
+
 variable "location" {
   type        = string
   default     = "eastus2" # East US 2 es una de las regiones primarias con soporte para Anthropic Claude en Azure

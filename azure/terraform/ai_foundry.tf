@@ -1,8 +1,8 @@
 # Cuenta de Servicios de IA de Azure (Azure AI Services / Azure AI Foundry Hub)
 resource "azurerm_cognitive_account" "ai_services" {
   name                = "${var.prefix}-${var.environment}-ai-${random_id.unique.hex}"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
   kind                = "AIServices"
   sku_name            = "S0"
 

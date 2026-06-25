@@ -1,7 +1,7 @@
 # Obtener las claves de la Azure Function para mapear la llamada segura
 data "azurerm_function_app_host_keys" "keys" {
   name                = azurerm_linux_function_app.chatbot.name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = data.azurerm_resource_group.rg.name
   
   depends_on = [
     azurerm_linux_function_app.chatbot
@@ -11,8 +11,8 @@ data "azurerm_function_app_host_keys" "keys" {
 # Azure API Management
 resource "azurerm_api_management" "apim" {
   name                = "${var.prefix}-${var.environment}-apim-${random_id.unique.hex}"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
   publisher_name      = "GasNet Operations"
   publisher_email     = "admin@gasnet.local"
 
@@ -27,7 +27,7 @@ resource "azurerm_api_management" "apim" {
 # API definition
 resource "azurerm_api_management_api" "api" {
   name                  = "ophub-chatbot-api"
-  resource_group_name   = azurerm_resource_group.rg.name
+  resource_group_name   = data.azurerm_resource_group.rg.name
   api_management_name   = azurerm_api_management.apim.name
   revision              = "1"
   display_name          = "GasNet Chatbot API"
@@ -47,7 +47,7 @@ resource "azurerm_api_management_api_operation" "post" {
   operation_id        = "post-chat"
   api_name            = azurerm_api_management_api.api.name
   api_management_name = azurerm_api_management.apim.name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = data.azurerm_resource_group.rg.name
   display_name        = "Post Chat Message"
   method              = "POST"
   url_template        = "/chat" # Ruta pública será /chat-service/chat
@@ -57,7 +57,7 @@ resource "azurerm_api_management_api_operation" "post" {
 resource "azurerm_api_management_product" "product" {
   product_id            = "ophub-product"
   api_management_name   = azurerm_api_management.apim.name
-  resource_group_name   = azurerm_resource_group.rg.name
+  resource_group_name   = data.azurerm_resource_group.rg.name
   display_name          = "GasNet Operations Product"
   subscription_required = true
   approval_required     = false
@@ -69,13 +69,13 @@ resource "azurerm_api_management_product_api" "product_api" {
   api_name            = azurerm_api_management_api.api.name
   product_id          = azurerm_api_management_product.product.product_id
   api_management_name = azurerm_api_management.apim.name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = data.azurerm_resource_group.rg.name
 }
 
 # Suscripción de APIM (para generar las claves x-api-key)
 resource "azurerm_api_management_subscription" "subscription" {
   api_management_name = azurerm_api_management.apim.name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = data.azurerm_resource_group.rg.name
   product_id          = azurerm_api_management_product.product.id
   display_name        = "GasNet Chatbot Subscription"
   state               = "active"
@@ -85,7 +85,7 @@ resource "azurerm_api_management_subscription" "subscription" {
 resource "azurerm_api_management_api_policy" "api_policy" {
   api_name            = azurerm_api_management_api.api.name
   api_management_name = azurerm_api_management.apim.name
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = data.azurerm_resource_group.rg.name
 
   xml_content = <<XML
 <policies>

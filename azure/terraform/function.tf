@@ -58,8 +58,8 @@ data "azurerm_storage_account_sas" "sas" {
 # Azure Function App en Linux
 resource "azurerm_linux_function_app" "chatbot" {
   name                = "${var.prefix}-${var.environment}-fn-${random_id.unique.hex}"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
 
   storage_account_name       = azurerm_storage_account.storage.name
   storage_account_access_key = azurerm_storage_account.storage.primary_access_key
