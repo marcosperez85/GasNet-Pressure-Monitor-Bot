@@ -28,3 +28,22 @@ yarn.lock
 *.sln
 *.sw?
 .DS_Store
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+.terraform.tfstate.lock.info
+.terraform.lock.hcl
+
+# Archivos de despliegue generados localmente
+*.zip
+
+# Azure Functions (Python)
+azure/function/local.settings.json
+azure/function/.python_packages/
+azure/function/.env
+__pycache__/
+*.pyc
