@@ -2,70 +2,65 @@ import azure.functions as func
 import json
 import logging
 import os
-import requests
+
 from openai import OpenAI
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
-# Configurar logging
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
+
 
 @app.route(route="chat", methods=["POST", "OPTIONS"])
 def chat(req: func.HttpRequest) -> func.HttpResponse:
-    logger.info('Procesando petición para el chatbot de GasNet en Azure.')
-    
+
     headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type,x-api-key',
-        'Access-Control-Allow-Methods': 'POST,OPTIONS'
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type,x-api-key",
+        "Access-Control-Allow-Methods": "POST,OPTIONS",
     }
 
-    # Manejar CORS preflight si llega directamente a la función
-    if req.method == 'OPTIONS':
+    if req.method == "OPTIONS":
         return func.HttpResponse(
+            "",
             status_code=200,
             headers=headers,
-            body=''
         )
 
     try:
-        # Obtener cuerpo de la petición
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            req_body = {}
 
-        query = req_body.get('query', '')
+        body = req.get_json()
+
+        query = body.get("query")
+
         if not query:
             return func.HttpResponse(
+                json.dumps({"error": "query is required"}),
                 status_code=400,
-                headers={**headers, 'Content-Type': 'application/json'},
-                body=json.dumps({'error': 'Query is required'})
+                mimetype="application/json",
+                headers=headers,
             )
 
-        # Configuración de OpenAI
-        endpoint = os.environ.get("OPENAI_ENDPOINT", "https://api.openai.com/v1")
-        deployment_name = os.environ.get("OPENAI_DEPLOYMENT_NAME", "gpt-5.1")
-        api_key = os.environ.get("OPENAI_API_KEY")
+        endpoint = os.environ["AZURE_AI_FOUNDRY_ENDPOINT"]
+        deployment = os.environ["AZURE_AI_FOUNDRY_DEPLOYMENT_NAME"]
+        api_key = os.environ["AZURE_AI_FOUNDRY_KEY"]
 
-        # Preparar cliente de OpenAI
         client = OpenAI(
             base_url=endpoint,
-            api_key=api_key
+            api_key=api_key,
         )
 
-        # Invocar el modelo de OpenAI
-        response = client.create_response(
-            model=deployment_name,
-            input=query
+        response = client.responses.create(
+            model=deployment,
+            input=query,
         )
+
+        answer = response.output_text
 
         return func.HttpResponse(
+            json.dumps({"response": answer}),
             status_code=200,
-            headers={**headers, 'Content-Type': 'application/json'},
-            body=json.dumps({
-                'response': response.output[0]
-            })
+            mimetype="application/json",
+            headers=headers,
         )
 
     except Exception as e:
@@ -75,9 +70,9 @@ def chat(req: func.HttpRequest) -> func.HttpResponse:
 
         return func.HttpResponse(
             status_code=500,
+            mimetype="application/json",
             body=json.dumps({
                 "error": str(e),
                 "trace": traceback.format_exc()
-            }),
-            mimetype="application/json"
+            })
         )
