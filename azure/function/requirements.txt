@@ -1,3 +1,4 @@
 azure-functions
 requests
 azure-identity
+openai==2.44.0
