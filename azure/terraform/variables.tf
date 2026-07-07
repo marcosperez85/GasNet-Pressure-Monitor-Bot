@@ -6,7 +6,7 @@ variable "resource_group_name" {
 
 variable "location" {
   type        = string
-  default     = "eastus2" # East US 2 es una de las regiones primarias con soporte para Anthropic Claude en Azure
+  default     = "eastus"
   description = "Región de Azure donde se desplegarán los recursos"
 }
 
@@ -34,14 +34,13 @@ variable "apim_sku" {
   description = "SKU de Azure API Management"
 }
 
-variable "claude_model_name" {
+variable "model_name" {
   type        = string
-  default     = "claude-3-5-sonnet"
-  description = "Nombre del modelo de Anthropic Claude en el catálogo de Azure AI"
+  default     = "gpt-5.1"
+  description = "gpt-5.1"
 }
 
-variable "claude_model_version" {
+variable "model_version" {
   type        = string
-  default     = "20241022" # Versión del modelo Claude 3.5 Sonnet
-  description = "Versión del modelo de Anthropic Claude"
+  default     = "20251113" # usar la versión exacta que muestra el deployment creado en Foundry
 }
