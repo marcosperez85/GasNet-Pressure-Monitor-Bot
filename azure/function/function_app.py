@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import requests
-from azure.identity import DefaultAzureCredential
+from openai import OpenAI
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
@@ -43,69 +43,41 @@ def chat(req: func.HttpRequest) -> func.HttpResponse:
                 body=json.dumps({'error': 'Query is required'})
             )
 
-        # Configuración de Azure AI Foundry
-        endpoint = os.environ.get("AZURE_AI_FOUNDRY_ENDPOINT")
-        if not endpoint:
-            raise ValueError("La variable AZURE_AI_FOUNDRY_ENDPOINT no está configurada")
+        # Configuración de OpenAI
+        endpoint = os.environ.get("OPENAI_ENDPOINT", "https://api.openai.com/v1")
+        deployment_name = os.environ.get("OPENAI_DEPLOYMENT_NAME", "gpt-5.1")
+        api_key = os.environ.get("OPENAI_API_KEY")
 
-        # Asegurar el path completo /v1/messages
-        if not endpoint.endswith("/v1/messages"):
-            endpoint = f"{endpoint.rstrip('/')}/v1/messages"
+        # Preparar cliente de OpenAI
+        client = OpenAI(
+            base_url=endpoint,
+            api_key=api_key
+        )
 
-        deployment_name = os.environ.get("AZURE_AI_FOUNDRY_DEPLOYMENT_NAME", "claude-3-5-sonnet")
-        api_key = os.environ.get("AZURE_AI_FOUNDRY_KEY")
-
-        # Preparar cabeceras de la petición a Azure AI Foundry
-        ai_headers = {
-            "Content-Type": "application/json",
-            "anthropic-version": "2023-06-01"
-        }
-
-        # Autenticación: Clave API si existe, sino Managed Identity (Entra ID)
-        if api_key:
-            ai_headers["Authorization"] = f"Bearer {api_key}"
-        else:
-            logger.info("No se detectó clave API. Utilizando Managed Identity para autenticar en Azure AI Foundry...")
-            credential = DefaultAzureCredential()
-            token = credential.get_token("https://cognitiveservices.azure.com/.default")
-            ai_headers["Authorization"] = f"Bearer {token.token}"
-
-        # Estructura del payload según el estándar de Anthropic Messages API
-        body_params = {
-            "model": deployment_name,
-            "system": "You are an industrial assistant specialized in operations, calculations, and process optimization. Be precise, concise, and avoid unnecessary explanations. Always respond in Spanish. Use clear structured answers. If you don't know the answer, say 'No dispongo de esa información'",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": query
-                }
-            ],
-            "max_tokens": 2000,
-            "temperature": 0.7
-        }
-
-        # Invocar Azure AI Foundry Serverless API
-        response = requests.post(endpoint, headers=ai_headers, json=body_params, timeout=30)
-        
-        if response.status_code != 200:
-            logger.error(f"Error devuelto por Azure AI Foundry ({response.status_code}): {response.text}")
-            raise Exception(f"Fallo al invocar el modelo en Azure AI Foundry: {response.text}")
-
-        response_json = response.json()
-        bot_response = response_json['content'][0]['text']
+        # Invocar el modelo de OpenAI
+        response = client.create_response(
+            model=deployment_name,
+            input=query
+        )
 
         return func.HttpResponse(
             status_code=200,
             headers={**headers, 'Content-Type': 'application/json'},
             body=json.dumps({
-                'response': bot_response
+                'response': response.output[0]
             })
         )
 
     except Exception as e:
-        logger.error(f"Error en ejecución: {str(e)}")
+        import traceback
+
+        logger.exception(e)
+
         return func.HttpResponse(
             status_code=500,
-            headers={**headers, 'Content-Type': 'application/json'},
-            body=json.dumps({'error': 'Internal server error'})
+            body=json.dumps({
+                "error": str(e),
+                "trace": traceback.format_exc()
+            }),
+            mimetype="application/json"
         )
