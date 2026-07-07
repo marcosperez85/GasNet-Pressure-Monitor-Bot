@@ -21,16 +21,16 @@ resource "azurerm_cognitive_account" "ai_services" {
   }
 }
 
-# Despliegue del Modelo Anthropic Claude en Azure AI Services
-# Nota: La disponibilidad de modelos de partner como Anthropic Claude varía por región (ej. East US 2, Sweden Central).
-resource "azurerm_cognitive_deployment" "claude" {
-  name                 = var.claude_model_name
+# Despliegue del Modelo de LLM en Azure AI Services
+# Nota: La disponibilidad de modelos de partner varía por región (ej. East US 2, Sweden Central).
+resource "azurerm_cognitive_deployment" "model" {
+  name                 = var.model_name
   cognitive_account_id = azurerm_cognitive_account.ai_services.id
 
   model {
-    format  = "Anthropic"
-    name    = var.claude_model_name
-    version = var.claude_model_version
+    format  = "OpenAI"
+    name    = var.model_name
+    version = var.model_version
   }
 
   sku {
