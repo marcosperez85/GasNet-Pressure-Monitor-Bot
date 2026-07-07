@@ -85,10 +85,10 @@ resource "azurerm_linux_function_app" "chatbot" {
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.app_insights.connection_string
     
     # Configuración para invocar Azure AI Foundry
-    "AZURE_AI_FOUNDRY_ENDPOINT"        = azurerm_cognitive_account.ai_services.endpoint
+    "AZURE_AI_FOUNDRY_ENDPOINT" = "${azurerm_cognitive_account.ai_services.endpoint}openai/v1/"
     "AZURE_AI_FOUNDRY_DEPLOYMENT_NAME" = var.model_name
     # Dejamos AZURE_AI_FOUNDRY_KEY vacío a propósito para forzar el uso de Managed Identity
-    "AZURE_AI_FOUNDRY_KEY"             = ""
+    "AZURE_AI_FOUNDRY_KEY" = var.azure_ai_api_key
   }
 
   lifecycle {
