@@ -44,3 +44,8 @@ variable "model_version" {
   type        = string
   default     = "20251113" # usar la versión exacta que muestra el deployment creado en Foundry
 }
+
+variable "azure_ai_api_key" {
+  type      = string
+  sensitive = true
+}
