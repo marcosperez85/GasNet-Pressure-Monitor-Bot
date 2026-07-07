@@ -8,3 +8,7 @@ output "api_key" {
   sensitive   = true
   description = "Clave de suscripción (x-api-key) para autenticarse en APIM"
 }
+
+output "ai_endpoint" {
+  value = azurerm_cognitive_account.ai_services.endpoint
+}
