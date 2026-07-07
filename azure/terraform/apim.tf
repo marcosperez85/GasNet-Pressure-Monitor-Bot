@@ -91,31 +91,17 @@ resource "azurerm_api_management_api_policy" "api_policy" {
 <policies>
     <inbound>
         <base />
-        <!-- CORS Policy: APIM intercepta preflight OPTIONS de forma nativa -->
-        <cors allow-credentials="false">
+        <cors>
             <allowed-origins>
                 <origin>*</origin>
             </allowed-origins>
-            <allowed-methods preflight-result-max-age="300">
-                <method>POST</method>
-                <method>OPTIONS</method>
+            <allowed-methods>
+                <method>*</method>
             </allowed-methods>
             <allowed-headers>
-                <allowed-header>Content-Type</allowed-header>
-                <allowed-header>x-api-key</allowed-header>
+                <header>*</header>
             </allowed-headers>
         </cors>
-        
-        <!-- Rate Limiting (10 requests por 1 segundo, equivalente al de AWS) -->
-        <rate-limit-by-key calls="10" renewal-period="1" counter-key="@(context.Subscription?.Id ?? context.Request.IpAddress)" />
-        
-        <!-- Enrutar hacia la Azure Function -->
-        <set-backend-service base-url="https://${azurerm_linux_function_app.chatbot.default_hostname}/api" />
-        
-        <!-- Inyectar clave x-functions-key de forma interna y transparente -->
-        <set-header name="x-functions-key" exists-action="override">
-            <value>${data.azurerm_function_app_host_keys.keys.default_function_key}</value>
-        </set-header>
     </inbound>
     <backend>
         <base />
